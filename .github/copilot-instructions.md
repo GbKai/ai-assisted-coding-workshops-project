@@ -1,33 +1,37 @@
 # AI Assistant Guidelines for This Project
 
 ## Stack
-- Plain HTML5, vanilla JavaScript (ES2020+), Tailwind CSS via CDN
+- Plain HTML5, vanilla JavaScript (ES2020+), plain CSS (no framework)
 - No bundler, no npm, no frameworks
-- Persistence: localStorage
-- Runs entirely in the browser
+- Persistence: `chrome.storage.local` (NOT localStorage)
+- Runs as a Chrome Extension (Manifest V3)
 
 ## Code Standards
 - Write CLEAN, READABLE code with clear function and variable names
 - Keep functions short (max ~30 lines), single responsibility
 - Comment only where logic isn't self-explanatory, in English
 - Use const/let, arrow functions, template literals, destructuring
-- Prefer Tailwind utility classes over inline styles
 - No magic strings — use named constants
 - Use semantic HTML with proper accessibility attributes
 
 ## What NOT to Do
 - Don't add libraries via npm or CDN without explicit request
 - Don't introduce TypeScript, React, or other frameworks
-- Don't add a backend, database, or API (Task 4 is an exception — BYOK pattern)
+- Don't use `localStorage` — use `chrome.storage.local` throughout
+- Don't add a backend, database, or proxy (Task 5 is an exception — BYOK direct API call)
 - Don't over-engineer — simplicity wins over flexibility
 
 ## File Structure
-- `index.html` — page structure, Tailwind CDN in `<head>`, script at end of `<body>`
-- `app.js` — all logic; if it grows, split into ES modules
-- localStorage keys: always via a named constant, prefix `"scrumPoker:"` (e.g. `"scrumPoker:nickname"`)
+- `popup.html` — extension popup UI; all CSS is inlined in `<style>`
+- `popup.js` — all popup logic: state, render functions, event handlers
+- `options.html` — settings page for API key
+- `options.js` — settings page logic
+- `manifest.json` — Chrome Extension manifest (Manifest V3)
+- `chrome.storage.local` keys: always via a named constant, prefix `"kainos-todo:"` (e.g. `"kainos-todo:todos"`)
 
 ## Working Pattern
 - Keep state in a single `state` object
 - Separate DOM updates from business logic
 - Render functions read state, never compute it
 - Event handlers update state, then call `render()`
+- Use event delegation on `#todo-list` — do not attach listeners inside render functions

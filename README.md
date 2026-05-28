@@ -1,6 +1,6 @@
-# Kainos TODO — Workshop Template
+# Kainos Task List — Workshop Template
 
-Training template for an AI-Assisted Coding workshop. The project is a **Chrome Extension TODO app** that grows across 5 tasks, each adding a new layer while practising AI-assisted coding with GitHub Copilot and Claude.
+Training template for an AI-Assisted Coding workshop. The project is a **Chrome Extension Task List app** that grows across 5 tasks, each adding a new layer while practising AI-assisted coding with GitHub Copilot and Claude.
 
 ---
 
@@ -28,7 +28,7 @@ No `npm install`, no bundler, no Live Server needed. The app runs as a Chrome Ex
 2. Open Chrome and go to `chrome://extensions`
 3. Enable **Developer mode** (toggle in the top-right corner)
 4. Click **Load unpacked** and select the project root folder
-5. The Kainos TODO icon appears in the Chrome toolbar — click it to open the popup
+5. The Kainos Task List icon appears in the Chrome toolbar — click it to open the popup
 6. Done
 
 **After every code change:** click the refresh icon (↺) on the extension tile in `chrome://extensions`, then reopen the popup.

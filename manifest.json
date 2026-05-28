@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "Kainos TODO",
+  "name": "Kainos Task List",
   "version": "1.0.0",
-  "description": "AI-Assisted Coding Workshop — TODO Extension",
+  "description": "AI-Assisted Coding Workshop — Task List Extension",
   "action": {
     "default_popup": "popup.html"
   },

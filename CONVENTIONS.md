@@ -2,14 +2,14 @@
 
 ## Git Workflow
 - Conventional commits: `feat:`, `fix:`, `refactor:`, `docs:`, `style:`, `chore:`
-- Feature branches: `feature/task-1-dark-mode`, `feature/task-2-stories`
+- Feature branches: `feature/task-1-storage`, `feature/task-2-complete-delete`
 - Merge to main after completing each task
 
 ## Naming
-- Functions: camelCase, verbs — `selectCard`, `revealVote`, `resetSession`
-- Variables: camelCase, nouns — `selectedCard`, `currentStory`
-- Constants: UPPER_SNAKE_CASE — `CARD_VALUES`, `STORAGE_KEYS`
-- localStorage keys: always via a named constant, prefix `"scrumPoker:"`
+- Functions: camelCase, verbs — `addTodo`, `toggleTodo`, `deleteTodo`
+- Variables: camelCase, nouns — `visibleTodos`, `activeCount`
+- Constants: UPPER_SNAKE_CASE — `STORAGE_KEY`, `API_KEY_STORAGE_KEY`
+- `chrome.storage.local` keys: always via a named constant, prefix `"kainos-todo:"`
 
 ---
 
@@ -18,23 +18,23 @@
 ### Effective Prompts
 
 **BE SPECIFIC** — include where, what technology, and what the expected outcome is:
-> "Add a dark mode toggle in the top-right corner of the header. Use Tailwind's `dark:` variant. Persist the state to localStorage under key `'scrumPoker:theme'`."
+> "Implement `loadState()` in `popup.js` using `chrome.storage.local.get` with `STORAGE_KEY`. In the callback, populate `state.todos` from the stored value (default to an empty array), then call `render()`."
 
 **NOT:**
-> "make dark mode nice"
+> "save the todos"
 
 ---
 
 **PROVIDE CONTEXT** — reference the exact file and function:
-> "Update the `selectCard` function in `app.js` to also persist the selected card to localStorage under key `'scrumPoker:lastCard'`."
+> "Update the `toggleTodo` function in `popup.js` to flip `todo.done`, call `saveState()`, then call `render()`."
 
 **NOT:**
-> "save the cards"
+> "make the checkbox work"
 
 ---
 
 **DEFINE CRITERIA** — state validation rules and UX behaviour explicitly:
-> "Add nickname validation: 2–20 characters, letters/digits/spaces only. Show an inline error message below the input."
+> "Add input validation: trim whitespace, ignore empty strings, max 200 characters. Show nothing if empty — do not add a blank task."
 
 **NOT:**
 > "add validation"
@@ -53,5 +53,5 @@
 3. Ask Copilot Chat for an implementation plan (3–5 steps, code optional)
 4. Accept the plan or refine it
 5. Implement step by step — **not** everything at once
-6. Verify each step works in the browser before moving on
+6. Verify each step works in the extension before moving on
 7. Add successful prompts to `PROMPTS.md`

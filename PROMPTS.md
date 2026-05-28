@@ -5,28 +5,33 @@ Each participant contributes successful prompts after completing each task.
 
 ---
 
-## Task 1 — First AI Interactions
+## Task 1 — Add & Display Tasks
 
-### Dark Mode
-> "Add a dark mode toggle button in the top-right corner of the header. Use Tailwind's `dark:` variant throughout. Persist the state to localStorage under key `'scrumPoker:theme'`. On page load, read the saved value and apply `class="dark"` to `<html>` if needed. Animate colour transitions with `transition-colors duration-200`."
+### Load state from chrome.storage
+> "Implement `loadState()` in `popup.js` using `chrome.storage.local.get` with `STORAGE_KEY`. In the callback, set `state.todos` to the stored array (default to `[]` if nothing is stored), then call `render()`."
 
-### Player Nickname
+### Save state to chrome.storage
 > [TO BE FILLED IN]
 
-### Vote Counter
+### Add todo and render list
 > [TO BE FILLED IN]
 
 ---
 
-## Task 2 — User Stories
+## Task 2 — Complete & Delete
 [TO BE FILLED IN]
 
 ---
 
-## Task 3 — History and Statistics
+## Task 3 — Filter Bar
 [TO BE FILLED IN]
 
 ---
 
-## Task 4 — AI in the Application
+## Task 4 — Reorder Tasks
+[TO BE FILLED IN]
+
+---
+
+## Task 5 — AI Priority Suggestions
 [TO BE FILLED IN]
