@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kainos TODO</title>
+  <style>
+    /* ── CSS Custom Properties ───────────────────────────────── */
+    :root {
+      --navy: #1C2340;
+      --green: #00B140;
+      --navy-light: #2d3a5e;
+      --text: #1C2340;
+      --text-muted: #6b7280;
+      --bg: #f8f9fa;
+      --white: #ffffff;
+      --done-text: #9ca3af;
+      --high: #ef4444;
+      --medium: #f59e0b;
+      --low: #10b981;
+    }
+
+    /* ── Reset ───────────────────────────────────────────────── */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    /* ── Base ────────────────────────────────────────────────── */
+    body {
+      min-width: 380px;
+      max-width: 380px;
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+    }
+
+    /* ── Header ──────────────────────────────────────────────── */
+    header {
+      background: var(--navy);
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border-bottom: 4px solid var(--green);
+    }
+
+    .logo {
+      color: var(--white);
+      font-weight: 700;
+      font-size: 18px;
+    }
+
+    .subtitle {
+      color: var(--green);
+      font-size: 12px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-left: auto;
+    }
+
+    /* ── Add Form ────────────────────────────────────────────── */
+    #add-form {
+      padding: 12px 16px;
+      background: var(--white);
+      border-bottom: 1px solid #e5e7eb;
+      display: flex;
+      gap: 8px;
+    }
+
+    #todo-input {
+      flex: 1;
+      padding: 8px 12px;
+      border: 1px solid #d1d5db;
+      border-radius: 6px;
+      font-size: 14px;
+      font-family: inherit;
+      outline: none;
+      color: var(--text);
+      background: var(--white);
+    }
+
+    #todo-input:focus {
+      border-color: var(--green);
+      box-shadow: 0 0 0 3px rgba(0, 177, 64, 0.1);
+    }
+
+    #btn-add {
+      background: var(--green);
+      color: var(--white);
+      border: none;
+      border-radius: 6px;
+      padding: 8px 16px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.15s;
+      font-family: inherit;
+    }
+
+    #btn-add:hover {
+      background: #009933;
+    }
+
+    /* ── Filter Bar ──────────────────────────────────────────── */
+    #filter-bar {
+      display: flex;
+      padding: 8px 16px;
+      background: var(--white);
+      border-bottom: 1px solid #e5e7eb;
+      gap: 4px;
+    }
+
+    .filter-btn {
+      background: none;
+      border: none;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 13px;
+      cursor: pointer;
+      color: var(--text-muted);
+      transition: all 0.15s;
+      font-family: inherit;
+    }
+
+    .filter-btn.active {
+      background: var(--navy);
+      color: var(--white);
+    }
+
+    .filter-btn:not(.active):hover {
+      background: #e5e7eb;
+    }
+
+    /* ── Stats ───────────────────────────────────────────────── */
+    #stats {
+      padding: 6px 16px;
+      font-size: 12px;
+      color: var(--text-muted);
+      background: var(--white);
+      border-bottom: 1px solid #e5e7eb;
+    }
+
+    /* ── Todo List ───────────────────────────────────────────── */
+    #todo-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      max-height: 360px;
+      overflow-y: auto;
+    }
+
+    .todo-item {
+      display: flex;
+      align-items: center;
+      padding: 10px 16px;
+      background: var(--white);
+      border-bottom: 1px solid #f3f4f6;
+      gap: 10px;
+      transition: background 0.1s;
+    }
+
+    .todo-item:hover {
+      background: #f9fafb;
+    }
+
+    .todo-item.done {
+      opacity: 0.7;
+    }
+
+    /* ── Checkbox ────────────────────────────────────────────── */
+    .todo-checkbox {
+      width: 18px;
+      height: 18px;
+      accent-color: var(--green);
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    /* ── Todo Text ───────────────────────────────────────────── */
+    .todo-text {
+      flex: 1;
+      font-size: 14px;
+      line-height: 1.4;
+    }
+
+    .todo-item.done .todo-text {
+      text-decoration: line-through;
+      color: var(--done-text);
+    }
+
+    /* ── Priority Badges ─────────────────────────────────────── */
+    .priority-badge {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .priority-high {
+      background: #fee2e2;
+      color: var(--high);
+    }
+
+    .priority-medium {
+      background: #fef3c7;
+      color: var(--medium);
+    }
+
+    .priority-low {
+      background: #d1fae5;
+      color: var(--low);
+    }
+
+    /* ── Delete Button ───────────────────────────────────────── */
+    .btn-delete {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      padding: 4px;
+      border-radius: 4px;
+      font-size: 16px;
+      line-height: 1;
+      opacity: 0;
+      transition: color 0.1s, opacity 0.1s;
+      flex-shrink: 0;
+    }
+
+    .btn-delete:hover {
+      color: #ef4444;
+    }
+
+    .todo-item:hover .btn-delete {
+      opacity: 1;
+    }
+
+    /* ── AI Priority Button ──────────────────────────────────── */
+    .btn-ai {
+      background: none;
+      border: 1px solid var(--green);
+      color: var(--green);
+      cursor: pointer;
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 600;
+      white-space: nowrap;
+      transition: background 0.15s, color 0.15s;
+      font-family: inherit;
+      flex-shrink: 0;
+    }
+
+    .btn-ai:hover {
+      background: var(--green);
+      color: var(--white);
+    }
+
+    .btn-ai:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    /* ── Empty State ─────────────────────────────────────────── */
+    #empty-state {
+      display: none;
+      text-align: center;
+      padding: 32px 16px;
+      color: var(--text-muted);
+    }
+
+    #empty-state span {
+      display: block;
+      font-size: 32px;
+      margin-bottom: 8px;
+    }
+
+    #empty-state p {
+      font-size: 14px;
+    }
+
+    /* ── AI Spinner ──────────────────────────────────────────── */
+    .ai-spinner {
+      display: inline-block;
+      width: 12px;
+      height: 12px;
+      border: 2px solid var(--green);
+      border-top-color: transparent;
+      border-radius: 50%;
+      animation: spin 0.6s linear infinite;
+      vertical-align: middle;
+    }
+
+    @keyframes spin {
+      0%   { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    /* ── Footer ──────────────────────────────────────────────── */
+    footer {
+      padding: 8px 16px;
+      font-size: 11px;
+      color: var(--text-muted);
+      text-align: center;
+      background: var(--white);
+      border-top: 1px solid #e5e7eb;
+    }
+
+    footer a {
+      color: var(--text-muted);
+      text-decoration: none;
+    }
+
+    footer a:hover {
+      color: var(--navy);
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <span class="logo">kainos</span>
+    <span class="subtitle">TODO</span>
+  </header>
+
+  <form id="add-form">
+    <input
+      id="todo-input"
+      type="text"
+      placeholder="Add a new task..."
+      maxlength="200"
+      autocomplete="off"
+    />
+    <button type="submit" id="btn-add">Add</button>
+  </form>
+
+  <div id="filter-bar">
+    <button class="filter-btn active" data-filter="all">All</button>
+    <button class="filter-btn" data-filter="active">Active</button>
+    <button class="filter-btn" data-filter="done">Done</button>
+  </div>
+
+  <div id="stats">0 tasks left</div>
+
+  <ul id="todo-list"></ul>
+
+  <div id="empty-state">
+    <span>✓</span>
+    <p>No tasks yet. Add one above!</p>
+  </div>
+
+  <footer>
+    <a href="#" id="options-link">⚙ Settings</a>
+  </footer>
+
+  <script src="popup.js"></script>
+</body>
+</html>

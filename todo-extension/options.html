@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kainos TODO — Settings</title>
+  <style>
+    /* ── CSS Custom Properties ───────────────────────────────── */
+    :root {
+      --navy: #1C2340;
+      --green: #00B140;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+      background: #f8f9fa;
+      color: #1C2340;
+      min-width: 480px;
+    }
+
+    header {
+      background: var(--navy);
+      padding: 14px 24px;
+      border-bottom: 4px solid var(--green);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .logo {
+      color: white;
+      font-weight: 700;
+      font-size: 20px;
+    }
+
+    .subtitle {
+      color: var(--green);
+      font-size: 12px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-left: auto;
+    }
+
+    main {
+      padding: 32px 24px;
+      max-width: 520px;
+    }
+
+    h1 {
+      font-size: 20px;
+      margin-bottom: 24px;
+    }
+
+    .field {
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    .hint {
+      font-size: 12px;
+      color: #6b7280;
+      margin-bottom: 8px;
+    }
+
+    input[type="password"] {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid #d1d5db;
+      border-radius: 6px;
+      font-size: 14px;
+      font-family: inherit;
+      outline: none;
+    }
+
+    input[type="password"]:focus {
+      border-color: var(--green);
+      box-shadow: 0 0 0 3px rgba(0, 177, 64, 0.1);
+    }
+
+    button[type="submit"] {
+      background: var(--green);
+      color: white;
+      border: none;
+      border-radius: 6px;
+      padding: 10px 24px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: inherit;
+    }
+
+    button[type="submit"]:hover {
+      background: #009933;
+    }
+
+    #save-status {
+      margin-top: 12px;
+      font-size: 13px;
+      color: var(--green);
+      min-height: 20px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <span class="logo">kainos</span>
+    <span class="subtitle">Settings</span>
+  </header>
+  <main>
+    <h1>Extension Settings</h1>
+    <form id="settings-form">
+      <div class="field">
+        <label for="api-key-input">Anthropic API Key</label>
+        <p class="hint">Used for AI priority suggestions (Task 5). Stored locally in your browser.</p>
+        <input type="password" id="api-key-input" placeholder="sk-ant-..." autocomplete="off" />
+      </div>
+      <button type="submit">Save</button>
+      <p id="save-status"></p>
+    </form>
+  </main>
+  <script src="options.js"></script>
+</body>
+</html>
