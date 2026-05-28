@@ -407,6 +407,147 @@
       color: var(--k-text-muted);
     }
 
+    /* ── Dark mode toggle button ── */
+    .btn-icon {
+      background: transparent;
+      border: 1px solid rgba(255,255,255,0.2);
+      color: rgba(255,255,255,0.7);
+      font-family: 'Inter', sans-serif;
+      font-size: 0.75rem;
+      font-weight: 500;
+      padding: 6px 14px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: border-color 0.15s ease, color 0.15s ease, background 0.15s ease;
+      letter-spacing: 0.03em;
+    }
+
+    .btn-icon:hover {
+      border-color: rgba(255,255,255,0.5);
+      color: white;
+      background: rgba(255,255,255,0.06);
+    }
+
+    /* ── Nickname row ── */
+    .nickname-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 28px;
+    }
+
+    .nickname-label {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--k-text-muted);
+      white-space: nowrap;
+    }
+
+    .nickname-input {
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      padding: 8px 14px;
+      border: 2px solid var(--k-grey-border);
+      border-radius: 4px;
+      background: white;
+      color: var(--k-navy);
+      outline: none;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+      width: 200px;
+    }
+
+    .nickname-input:focus {
+      border-color: var(--k-green);
+      box-shadow: 0 0 0 3px var(--k-green-glow);
+    }
+
+    .nickname-display {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--k-green);
+    }
+
+    /* ── Vote counter ── */
+    .vote-counter {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 28px;
+    }
+
+    .vote-counter-label {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--k-text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .vote-counter-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 28px;
+      height: 28px;
+      padding: 0 8px;
+      border-radius: 100px;
+      background: var(--k-navy);
+      color: white;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    /* ── Dark mode ── */
+    html.dark {
+      --k-grey-bg: #111827;
+      --k-grey-border: #374151;
+      --k-text-muted: #9CA3AF;
+    }
+
+    html.dark body {
+      background: var(--k-grey-bg);
+      color: #F9FAFB;
+    }
+
+    html.dark .poker-card {
+      background: #1F2937;
+      color: #F9FAFB;
+      border-color: var(--k-grey-border);
+    }
+
+    html.dark .poker-card.selected {
+      background: var(--k-navy);
+      color: white;
+    }
+
+    html.dark .btn-secondary {
+      background: #1F2937;
+      color: #F9FAFB;
+      border-color: var(--k-grey-border);
+    }
+
+    html.dark .btn-secondary:hover {
+      border-color: #9CA3AF;
+    }
+
+    html.dark .nickname-input {
+      background: #1F2937;
+      color: #F9FAFB;
+      border-color: var(--k-grey-border);
+    }
+
+    html.dark .vote-counter-badge {
+      background: #374151;
+      color: #F9FAFB;
+    }
+
+    html.dark footer {
+      border-top-color: var(--k-grey-border);
+    }
+
     /* ── Footer ── */
     footer {
       border-top: 1px solid var(--k-grey-border);
@@ -453,7 +594,12 @@
         <div class="logo-divider"></div>
         <span class="logo-sub">Scrum Poker</span>
       </a>
-      <span class="header-tag">AI-Assisted Coding Workshop</span>
+      <div style="display:flex;align-items:center;gap:16px;">
+        <span class="header-tag">AI-Assisted Coding Workshop</span>
+        <button id="btn-dark-mode" class="btn-icon" aria-pressed="false" aria-label="Switch to dark mode">
+          ☾ Dark
+        </button>
+      </div>
     </div>
     <div class="header-accent"></div>
   </header>
@@ -472,6 +618,20 @@
 
   <!-- Main -->
   <main>
+    <div class="nickname-row">
+      <label for="nickname-input" class="nickname-label">Your name:</label>
+      <input
+        id="nickname-input"
+        class="nickname-input"
+        type="text"
+        placeholder="Enter nickname"
+        maxlength="30"
+        autocomplete="off"
+        aria-label="Your nickname"
+      />
+      <span id="nickname-display" class="nickname-display" hidden></span>
+    </div>
+
     <p class="section-label">Pick your estimate</p>
 
     <section aria-label="Estimation cards">
@@ -488,6 +648,11 @@
     </div>
 
     <div id="result" aria-live="polite" aria-atomic="true"></div>
+
+    <div class="vote-counter" aria-label="Session vote count">
+      <span class="vote-counter-label">Votes this session:</span>
+      <span id="vote-count" class="vote-counter-badge" aria-live="polite">0</span>
+    </div>
   </main>
 
   <!-- Footer -->
