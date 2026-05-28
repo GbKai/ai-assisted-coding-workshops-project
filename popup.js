@@ -3,10 +3,10 @@ const STORAGE_KEY = 'kainos-todo:todos';
 const state = {
   todos: [
     // TODO Task 1: remove these hardcoded todos and load from chrome.storage.local instead
-    { id: 1, text: 'Buy groceries', done: false, createdAt: '2026-01-01T09:00:00.000Z', priority: null },
-    { id: 2, text: 'Review pull request', done: true, createdAt: '2026-01-01T10:00:00.000Z', priority: null },
-    { id: 3, text: 'Write unit tests', done: false, createdAt: '2026-01-01T11:00:00.000Z', priority: null },
-    { id: 4, text: 'Update project README', done: false, createdAt: '2026-01-01T12:00:00.000Z', priority: null },
+    { id: 1, text: 'Listen carefully to the trainer 🎧', done: true, createdAt: '2026-01-01T09:00:00.000Z', priority: null },
+    { id: 2, text: 'Stop asking ChatGPT, use Copilot instead', done: false, createdAt: '2026-01-01T10:00:00.000Z', priority: null },
+    { id: 3, text: 'Actually read the prompt before hitting Enter', done: false, createdAt: '2026-01-01T11:00:00.000Z', priority: null },
+    { id: 4, text: 'Work hard on tasks (yes, all 5 of them)', done: false, createdAt: '2026-01-01T12:00:00.000Z', priority: null },
   ],
   filter: 'all',
   aiLoading: false,
