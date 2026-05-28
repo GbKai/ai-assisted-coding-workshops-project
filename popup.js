@@ -1,8 +1,14 @@
 const STORAGE_KEY = 'kainos-todo:todos';
 
 const state = {
-  todos: [],          // [{ id, text, done, createdAt, priority }]
-  filter: 'all',      // 'all' | 'active' | 'done'
+  todos: [
+    // TODO Task 1: remove these hardcoded todos and load from chrome.storage.local instead
+    { id: 1, text: 'Buy groceries', done: false, createdAt: '2026-01-01T09:00:00.000Z', priority: null },
+    { id: 2, text: 'Review pull request', done: true, createdAt: '2026-01-01T10:00:00.000Z', priority: null },
+    { id: 3, text: 'Write unit tests', done: false, createdAt: '2026-01-01T11:00:00.000Z', priority: null },
+    { id: 4, text: 'Update project README', done: false, createdAt: '2026-01-01T12:00:00.000Z', priority: null },
+  ],
+  filter: 'all',
   aiLoading: false,
 };
 
@@ -43,8 +49,7 @@ function setFilter(filter) {
 }
 
 function getVisibleTodos() {
-  // TODO Task 3: return state.todos filtered by state.filter
-  // 'all' → all todos, 'active' → done === false, 'done' → done === true
+  // TODO Task 3: add filter logic for 'active' and 'done'
   return state.todos;
 }
 
@@ -56,19 +61,22 @@ function setPriority(id, priority) {
 // ── Render ─────────────────────────────────────────────────────
 
 function renderList() {
-  // TODO Task 2: generate an <li> for each todo in getVisibleTodos()
-  // Each <li> should have:
-  //   - class "todo-item" (+ "done" if todo.done)
-  //   - data-id attribute
-  //   - a checkbox (.todo-checkbox) with checked = todo.done
-  //   - a span (.todo-text) with todo.text
-  //   - a priority badge if todo.priority is set
-  //   - a delete button (.btn-delete)
-  //   - an AI button (.btn-ai) with text "✦ Priority" (Task 5)
+  const list = document.getElementById('todo-list');
+  const visible = getVisibleTodos();
+  list.innerHTML = visible.map(todo => `
+    <li class="todo-item${todo.done ? ' done' : ''}" data-id="${todo.id}">
+      <input class="todo-checkbox" type="checkbox" ${todo.done ? 'checked' : ''} />
+      <span class="todo-text">${todo.text}</span>
+      ${todo.priority ? `<span class="priority-badge priority-${todo.priority}">${todo.priority}</span>` : ''}
+      <button class="btn-delete" title="Delete">✕</button>
+    </li>
+  `).join('');
+  // TODO Task 2: wire checkbox and delete button via event delegation in initHandlers()
 }
 
 function renderEmptyState() {
-  // TODO Task 2: show #empty-state if getVisibleTodos() is empty, hide otherwise
+  const empty = document.getElementById('empty-state');
+  empty.style.display = getVisibleTodos().length === 0 ? 'block' : 'none';
 }
 
 function renderFilterBar() {
@@ -76,7 +84,8 @@ function renderFilterBar() {
 }
 
 function renderStats() {
-  // TODO Task 3: update #stats text with count of active (not done) todos
+  const active = state.todos.filter(t => !t.done).length;
+  document.getElementById('stats').textContent = `${active} task${active !== 1 ? 's' : ''} left`;
 }
 
 function render() {
