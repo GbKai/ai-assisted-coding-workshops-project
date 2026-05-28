@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Scrum Poker — Kainos</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,300;0,14..32,400;0,14..32,500;0,14..32,600;0,14..32,700;0,14..32,800;1,14..32,400&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --k-green: #00B140;
+      --k-green-dark: #008F33;
+      --k-green-glow: rgba(0, 177, 64, 0.25);
+      --k-navy: #1C2340;
+      --k-navy-light: #2A3356;
+      --k-grey-bg: #F4F5F7;
+      --k-grey-border: #E2E5EB;
+      --k-text-muted: #6B7280;
+    }
+
+    body {
+      font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+      background: var(--k-grey-bg);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      color: var(--k-navy);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── Header ── */
+    header {
+      background: var(--k-navy);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+
+    .header-inner {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 0 24px;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .header-accent {
+      height: 3px;
+      background: var(--k-green);
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      text-decoration: none;
+    }
+
+    .logo-wordmark {
+      display: flex;
+      align-items: baseline;
+      gap: 0;
+    }
+
+    .logo-wordmark .part-white {
+      font-size: 26px;
+      font-weight: 800;
+      color: white;
+      letter-spacing: -0.5px;
+    }
+
+    .logo-wordmark .part-green {
+      font-size: 26px;
+      font-weight: 800;
+      color: var(--k-green);
+      letter-spacing: -0.5px;
+    }
+
+    .logo-divider {
+      width: 1px;
+      height: 24px;
+      background: rgba(255,255,255,0.2);
+    }
+
+    .logo-sub {
+      font-size: 12px;
+      font-weight: 500;
+      color: rgba(255,255,255,0.5);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .header-tag {
+      font-size: 12px;
+      font-weight: 500;
+      color: rgba(255,255,255,0.35);
+      letter-spacing: 0.03em;
+    }
+
+    /* ── Hero ── */
+    .hero {
+      background: linear-gradient(135deg, var(--k-navy) 0%, var(--k-navy-light) 100%);
+      padding: 48px 24px 56px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--k-green), transparent);
+    }
+
+    /* subtle grid pattern */
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+    }
+
+    .hero-inner {
+      max-width: 960px;
+      margin: 0 auto;
+      text-align: center;
+      position: relative;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(0, 177, 64, 0.12);
+      border: 1px solid rgba(0, 177, 64, 0.3);
+      border-radius: 100px;
+      padding: 5px 14px;
+      margin-bottom: 20px;
+    }
+
+    .hero-badge-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--k-green);
+      box-shadow: 0 0 8px var(--k-green);
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    .hero-badge span {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--k-green);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .hero h1 {
+      font-size: clamp(1.75rem, 4vw, 2.5rem);
+      font-weight: 800;
+      color: white;
+      letter-spacing: -0.03em;
+      line-height: 1.1;
+      margin-bottom: 12px;
+    }
+
+    .hero h1 em {
+      font-style: normal;
+      color: var(--k-green);
+    }
+
+    .hero p {
+      font-size: 1rem;
+      color: rgba(255,255,255,0.55);
+      font-weight: 400;
+      max-width: 420px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+
+    /* ── Main ── */
+    main {
+      flex: 1;
+      max-width: 800px;
+      margin: 0 auto;
+      width: 100%;
+      padding: 40px 24px;
+    }
+
+    .section-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--k-text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    /* ── Poker cards ── */
+    #card-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+    }
+
+    @media (min-width: 600px) {
+      #card-grid { gap: 16px; }
+    }
+
+    .poker-card {
+      aspect-ratio: 2 / 3;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
+      font-family: 'Inter', sans-serif;
+      font-weight: 700;
+      font-size: 1.625rem;
+      cursor: pointer;
+      transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease, background 0.15s ease, color 0.15s ease;
+      border: 2px solid var(--k-grey-border);
+      background: white;
+      color: var(--k-navy);
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 1px 4px rgba(28,35,64,0.07);
+      user-select: none;
+    }
+
+    .poker-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: var(--k-green);
+      transform: scaleX(0);
+      transition: transform 0.2s ease;
+      transform-origin: left;
+    }
+
+    .poker-card:hover:not([disabled])::before,
+    .poker-card.selected::before {
+      transform: scaleX(1);
+    }
+
+    .poker-card:hover:not([disabled]) {
+      border-color: var(--k-green);
+      transform: translateY(-3px);
+      box-shadow: 0 8px 24px var(--k-green-glow);
+    }
+
+    .poker-card.selected {
+      background: var(--k-navy);
+      color: white;
+      border-color: var(--k-green);
+      box-shadow: 0 6px 24px var(--k-green-glow);
+      transform: translateY(-2px);
+    }
+
+    .poker-card[disabled] {
+      cursor: not-allowed;
+      opacity: 0.45;
+      transform: none;
+    }
+
+    .poker-card.selected[disabled] {
+      opacity: 1;
+    }
+
+    /* ── Actions ── */
+    .actions {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      margin-top: 36px;
+    }
+
+    .btn-primary {
+      background: var(--k-green);
+      color: white;
+      font-family: 'Inter', sans-serif;
+      font-weight: 600;
+      font-size: 0.9375rem;
+      padding: 12px 36px;
+      border-radius: 4px;
+      border: none;
+      cursor: pointer;
+      transition: background 0.15s ease, transform 0.1s ease, opacity 0.15s;
+      letter-spacing: 0.01em;
+    }
+
+    .btn-primary:hover:not([disabled]) {
+      background: var(--k-green-dark);
+    }
+
+    .btn-primary:active:not([disabled]) {
+      transform: scale(0.97);
+    }
+
+    .btn-primary[disabled] {
+      opacity: 0.38;
+      cursor: not-allowed;
+    }
+
+    .btn-secondary {
+      background: white;
+      color: var(--k-navy);
+      font-family: 'Inter', sans-serif;
+      font-weight: 600;
+      font-size: 0.9375rem;
+      padding: 12px 36px;
+      border-radius: 4px;
+      border: 2px solid var(--k-grey-border);
+      cursor: pointer;
+      transition: border-color 0.15s ease, transform 0.1s ease;
+      letter-spacing: 0.01em;
+    }
+
+    .btn-secondary:hover {
+      border-color: var(--k-navy);
+    }
+
+    .btn-secondary:active {
+      transform: scale(0.97);
+    }
+
+    /* ── Result ── */
+    #result {
+      margin-top: 40px;
+      display: flex;
+      justify-content: center;
+    }
+
+    .result-inner {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .result-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--k-text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    .revealed-card {
+      width: 90px;
+      height: 126px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 10px;
+      font-family: 'Inter', sans-serif;
+      font-size: 2.75rem;
+      font-weight: 800;
+      background: var(--k-navy);
+      color: white;
+      border: 3px solid var(--k-green);
+      box-shadow: 0 8px 32px var(--k-green-glow), 0 0 0 1px rgba(0,177,64,0.15);
+      animation: reveal-flip 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    @keyframes reveal-flip {
+      0%   { transform: scale(0.6) rotateY(90deg); opacity: 0; }
+      100% { transform: scale(1)   rotateY(0deg);  opacity: 1; }
+    }
+
+    .result-confirmed {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+
+    .result-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--k-green);
+    }
+
+    .result-confirmed span {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--k-text-muted);
+    }
+
+    /* ── Footer ── */
+    footer {
+      border-top: 1px solid var(--k-grey-border);
+      padding: 24px;
+      margin-top: auto;
+    }
+
+    .footer-inner {
+      max-width: 960px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .footer-copy {
+      font-size: 12px;
+      color: #9CA3AF;
+    }
+
+    .footer-right {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .footer-right span {
+      font-size: 12px;
+      color: #9CA3AF;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header>
+    <div class="header-inner">
+      <a class="logo" href="#" aria-label="Kainos Scrum Poker">
+        <div class="logo-wordmark">
+          <span class="part-white">kai</span><span class="part-green">nos</span>
+        </div>
+        <div class="logo-divider"></div>
+        <span class="logo-sub">Scrum Poker</span>
+      </a>
+      <span class="header-tag">AI-Assisted Coding Workshop</span>
+    </div>
+    <div class="header-accent"></div>
+  </header>
+
+  <!-- Hero -->
+  <div class="hero">
+    <div class="hero-inner">
+      <div class="hero-badge">
+        <div class="hero-badge-dot"></div>
+        <span>Live Session</span>
+      </div>
+      <h1>Story Point <em>Estimation</em></h1>
+      <p>Pick a card to cast your estimate for the current sprint story</p>
+    </div>
+  </div>
+
+  <!-- Main -->
+  <main>
+    <p class="section-label">Pick your estimate</p>
+
+    <section aria-label="Estimation cards">
+      <div id="card-grid"></div>
+    </section>
+
+    <div class="actions">
+      <button id="btn-reveal" class="btn-primary" aria-label="Reveal the selected card value">
+        Reveal
+      </button>
+      <button id="btn-reset" class="btn-secondary" aria-label="Reset selection and hide result">
+        Reset
+      </button>
+    </div>
+
+    <div id="result" aria-live="polite" aria-atomic="true"></div>
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-inner">
+      <span class="footer-copy">© 2026 Kainos Group PLC. All rights reserved.</span>
+      <div class="footer-right">
+        <svg width="8" height="8" viewBox="0 0 8 8" fill="none">
+          <circle cx="4" cy="4" r="4" fill="#00B140"/>
+        </svg>
+        <span>AI-Assisted Coding Workshop</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
