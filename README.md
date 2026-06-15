@@ -47,7 +47,6 @@ No `npm install`, no bundler, no Live Server needed. The app runs as a Chrome Ex
 | `options.html` | Settings page — OpenRouter API key input |
 | `options.js` | Settings logic — stubs for Task 5 |
 | `icons/` | Extension icons (16, 48, 128 px) |
-| `NEXT.md` | **Read this first** — workshop overview and task descriptions |
 | `TASKS.md` | Full description of all 5 workshop tasks (trainer reference) |
 | `CONVENTIONS.md` | Code conventions + working-with-AI tips |
 | `PROMPTS.md` | Prompt library (trainer reference) |
@@ -88,7 +87,6 @@ Each task branch is a starting point — it contains completed code from all pre
 
 ```bash
 git checkout task-1        # start here
-cat NEXT.md                # read what to build
 
 git checkout -b my-task-1  # your working branch
 # … code with Copilot …
