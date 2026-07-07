@@ -64,15 +64,44 @@ function setPriority(id, priority) {
 function renderList() {
   const list = document.getElementById('todo-list');
   const visible = getVisibleTodos();
-  list.innerHTML = visible.map(todo => `
-    <li class="todo-item${todo.done ? ' done' : ''}" data-id="${todo.id}">
-      <input class="todo-checkbox" type="checkbox" ${todo.done ? 'checked' : ''} />
-      <span class="todo-text">${todo.text}</span>
-      ${todo.priority ? `<span class="priority-badge priority-${todo.priority}">${todo.priority}</span>` : ''}
-      <button class="btn-delete" title="Delete">✕</button>
-    </li>
-  `).join('');
+
+  list.replaceChildren();
+  for (const todo of visible) {
+    list.append(createTodoItem(todo));
+  }
   // TODO Task 2: wire checkbox and delete button via event delegation in initHandlers()
+}
+
+function createTodoItem(todo) {
+  const li = document.createElement('li');
+  li.className = todo.done ? 'todo-item done' : 'todo-item';
+  li.dataset.id = todo.id;
+
+  const checkbox = document.createElement('input');
+  checkbox.type = 'checkbox';
+  checkbox.className = 'todo-checkbox';
+  checkbox.checked = todo.done;
+  li.append(checkbox);
+
+  const text = document.createElement('span');
+  text.className = 'todo-text';
+  text.textContent = todo.text;
+  li.append(text);
+
+  if (todo.priority) {
+    const badge = document.createElement('span');
+    badge.className = `priority-badge priority-${todo.priority}`;
+    badge.textContent = todo.priority;
+    li.append(badge);
+  }
+
+  const deleteBtn = document.createElement('button');
+  deleteBtn.className = 'btn-delete';
+  deleteBtn.title = 'Delete';
+  deleteBtn.textContent = '✕';
+  li.append(deleteBtn);
+
+  return li;
 }
 
 function renderEmptyState() {
