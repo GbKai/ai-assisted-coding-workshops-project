@@ -53,7 +53,7 @@ At the start of every session, the user should say **"I'm working on Task N"** (
 ### Must NOT do
 - No libraries via npm or CDN (unless the user explicitly asks).
 - No TypeScript, React, Vue, or any framework.
-- No `localStorage` — always `chrome.storage.local`.
+- No `localStorage` **in the Chrome-extension pages** (`popup.html`, `options.html`) — always `chrome.storage.local`. **Exception:** the browser preview (`index.html`) does not have access to `chrome.storage.local`, so `localStorage` is acceptable there during early workshop tasks. Keys still use the `"kainos-todo:"` prefix via a named constant.
 - No backend, database, or proxy server. (Task 5 is the only exception: a direct browser-to-API call with the user's own key — "BYOK".)
 - No over-engineering. Simplicity beats flexibility.
 
@@ -134,11 +134,11 @@ The project grows across **5 tasks**. Only work on the task the user names. Do *
 
 > **Placeholders — fill in when ready.**
 
-- **Task 1 — _[title]_**
-  - Goal: _[describe in one sentence]_
-  - Files touched: _[e.g. popup.js, popup.html]_
-  - Out of scope: _[what belongs to later tasks]_
-  - Done when: _[observable behaviour that proves it works]_
+- **Task 1 — Add tasks & persistence**
+  - Goal: Users can type a task name, add it to the list, and the list survives a page refresh.
+  - Files touched: `popup.js` (state, `loadState`, `saveState`, `addTodo`, form handler). `index.html` markup is already wired.
+  - Out of scope: Marking tasks done (Task 2), filters/counts (Task 3).
+  - Done when: Typing text + pressing Enter or clicking **Add** appends a task; empty input adds nothing; refreshing the page keeps the tasks; when the list is empty the empty-state message is shown.
 
 - **Task 2 — _[title]_**
   - Goal: _[…]_
