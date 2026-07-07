@@ -1,13 +1,7 @@
 const STORAGE_KEY = 'kainos-todo:todos';
 
 const state = {
-  todos: [
-    // TODO Task 1: remove these hardcoded todos and load from chrome.storage.local instead
-    { id: 1, text: 'Listen carefully to the trainer 🎧', done: true, createdAt: '2026-01-01T09:00:00.000Z', priority: null },
-    { id: 2, text: 'Stop asking ChatGPT, use Copilot instead', done: false, createdAt: '2026-01-01T10:00:00.000Z', priority: null },
-    { id: 3, text: 'Actually read the prompt before hitting Enter', done: false, createdAt: '2026-01-01T11:00:00.000Z', priority: null },
-    { id: 4, text: 'Work hard on tasks (yes, all 5 of them)', done: false, createdAt: '2026-01-01T12:00:00.000Z', priority: null },
-  ],
+  todos: [],
   filter: 'all',
   aiLoading: false,
 };
@@ -15,15 +9,38 @@ const state = {
 // ── Persistence ────────────────────────────────────────────────
 
 function loadState() {
+  const raw = localStorage.getItem(STORAGE_KEY);
+  if (raw) {
+    try {
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed)) state.todos = parsed;
+    } catch {
+      // corrupt data — ignore and start fresh
+    }
+  }
   render();
 }
 
 function saveState() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(state.todos));
 }
 
-// ── Business logic ─────────────────────────────────────────────
+// ── Business logic ────────────────────────────────
 
 function addTodo(text) {
+  const trimmed = text.trim();
+  if (!trimmed) return;
+
+  state.todos.push({
+    id: crypto.randomUUID(),
+    text: trimmed,
+    done: false,
+    createdAt: new Date().toISOString(),
+    priority: null,
+  });
+
+  saveState();
+  render();
 }
 
 function toggleTodo(id) {
@@ -90,6 +107,15 @@ function render() {
 // ── Event wiring ───────────────────────────────────────────────
 
 function initHandlers() {
+
+  // Add task via form submit (covers both Enter key and Add button)
+  document.getElementById('add-form').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const input = document.getElementById('todo-input');
+    addTodo(input.value);
+    input.value = '';
+    input.focus();
+  });
 
   // Options link
   document.getElementById('options-link').addEventListener('click', (e) => {
