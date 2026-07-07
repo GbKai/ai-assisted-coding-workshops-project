@@ -17,7 +17,7 @@
 ## What NOT to Do
 - Don't add libraries via npm or CDN without explicit request
 - Don't introduce TypeScript, React, or other frameworks
-- Don't use `localStorage` — use `chrome.storage.local` throughout
+- Don't use `localStorage` in the Chrome-extension pages (`popup.html`, `options.html`) — use `chrome.storage.local` there. **Exception:** the browser preview (`index.html`) has no `chrome.storage.local`, so `localStorage` is acceptable there during early workshop tasks. Keys still use the `"kainos-todo:"` prefix via a named constant.
 - Don't add a backend, database, or proxy (Task 5 is an exception — BYOK direct API call)
 - Don't over-engineer — simplicity wins over flexibility
 
