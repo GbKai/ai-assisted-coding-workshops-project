@@ -41,18 +41,34 @@ No `npm install`, no bundler, no Live Server needed. The app runs as a Chrome Ex
 
 | File / Folder | Purpose |
 |---|---|
-| `manifest.json` | Chrome Extension configuration (Manifest V3) |
-| `popup.html` | Popup UI — structure + all CSS (Kainos theme) |
-| `popup.js` | Application logic — all function stubs for Tasks 1–5 |
+| `index.html` | Standalone browser preview of the app (works without loading the extension) |
+| `popup.js` | Application logic — state, render, event handlers (stubs remain for Tasks 2–5) |
 | `options.html` | Settings page — OpenRouter API key input |
 | `options.js` | Settings logic — stubs for Task 5 |
-| `icons/` | Extension icons (16, 48, 128 px) |
-| `TASKS.md` | Full description of all 5 workshop tasks (trainer reference) |
-| `CONVENTIONS.md` | Code conventions + working-with-AI tips |
-| `PROMPTS.md` | Prompt library (trainer reference) |
-| `.github/copilot-instructions.md` | AI context file for GitHub Copilot |
+| `icons/` | Extension icons (SVG source + generated PNGs) |
+| [`AGENTS.md`](AGENTS.md) | Rules that apply to any AI assistant working on this project |
+| `.github/copilot-instructions.md` | Copilot-specific rules (auto-loaded in VS Code) |
+| [`.github/agents/`](.github/agents) | Custom agents you can pick from the VS Code agent selector |
+| [`skills/`](skills) | Reusable procedures the AI pulls in only when relevant |
+| `manifest.json`, `popup.html` | Chrome Extension shell — added later in the workshop (tracked in issue #4) |
 
 > **Icons note:** Generate `icons/icon16.png`, `icons/icon48.png`, and `icons/icon128.png` before loading the extension. Use [favicon.io](https://favicon.io/favicon-generator/) or any icon tool. A reference SVG is provided in `icons/icon.svg`.
+
+---
+
+## AI Assistant Setup
+
+This template ships with three layers of AI customisation. They're what makes an AI assistant behave consistently and safely inside this project.
+
+- **Always-on rules** — [`AGENTS.md`](AGENTS.md) and [`.github/copilot-instructions.md`](.github/copilot-instructions.md). Loaded automatically on every prompt; define what the AI must/must-not do (no npm, no frameworks, storage-key conventions, etc.).
+- **Skills** — [`skills/`](skills). Reusable procedures the AI pulls in only when the task matches. Currently:
+  - `merge-pull-request` — safe PR merge lifecycle
+  - `work-github-issue` — pick up an issue, branch, PR, close
+  - `openrouter-api-call` — how to call OpenRouter for Task 5
+- **Custom agents** — [`.github/agents/`](.github/agents). Specialist agents selectable from the VS Code agent picker. Currently:
+  - `Code Reviewer` — read-only reviewer that reports in plain English for non-technical readers
+
+If any of this is unfamiliar, that's fine — you'll be introduced to it during the workshop.
 
 ---
 
