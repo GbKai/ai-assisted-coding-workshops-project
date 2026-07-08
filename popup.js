@@ -124,6 +124,17 @@ function sortByUrgency(todos) {
   });
 }
 
+function formatDueDate(iso) {
+  if (!iso) return '';
+  const [y, m, d] = iso.split('-').map(Number);
+  if (!y || !m || !d) return '';
+  const date = new Date(y, m - 1, d);
+  const opts = y === new Date().getFullYear()
+    ? { day: 'numeric', month: 'short' }
+    : { day: 'numeric', month: 'short', year: 'numeric' };
+  return date.toLocaleDateString(undefined, opts);
+}
+
 function setPriority(id, priority) {
   const todo = state.todos.find(t => t.id === id);
   if (!todo) return;
@@ -159,6 +170,11 @@ function createTodoItem(todo) {
   text.className = 'todo-text';
   text.textContent = todo.text;
   li.append(text);
+
+  const date = document.createElement('span');
+  date.className = todo.dueDate ? 'todo-date' : 'todo-date empty';
+  date.textContent = todo.dueDate ? formatDueDate(todo.dueDate) : '—';
+  li.append(date);
 
   const urgency = getUrgency(todo);
   if (urgency === URGENCY.OVERDUE || urgency === URGENCY.TODAY) {
