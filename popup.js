@@ -1,4 +1,7 @@
 const STORAGE_KEY = 'kainos-todo:todos';
+const API_KEY_STORAGE_KEY = 'kainos-todo:apiKey';
+const OPENROUTER_URL = 'https://openrouter.ai/api/v1/chat/completions';
+const OPENROUTER_MODEL = 'openai/gpt-4o-mini';
 
 const FILTERS = {
   ALL: 'all',
@@ -14,10 +17,13 @@ const URGENCY = {
   DONE: 4,
 };
 
+const PRIORITIES = ['high', 'medium', 'low'];
+
 const state = {
   todos: [],
   filter: FILTERS.ALL,
-  aiLoading: false,
+  aiLoading: new Set(),
+  aiError: null,
 };
 
 // ── Persistence ────────────────────────────────────────────────
@@ -119,6 +125,11 @@ function sortByUrgency(todos) {
 }
 
 function setPriority(id, priority) {
+  const todo = state.todos.find(t => t.id === id);
+  if (!todo) return;
+  todo.priority = priority;
+  saveState();
+  render();
 }
 
 // ── Render ─────────────────────────────────────────────────────
@@ -165,6 +176,23 @@ function createTodoItem(todo) {
     li.append(badge);
   }
 
+  if (!todo.done) {
+    const aiBtn = document.createElement('button');
+    aiBtn.type = 'button';
+    aiBtn.className = 'btn-ai';
+    aiBtn.title = 'Suggest priority with AI';
+    const loading = state.aiLoading.has(todo.id);
+    aiBtn.disabled = loading;
+    if (loading) {
+      const spinner = document.createElement('span');
+      spinner.className = 'ai-spinner';
+      aiBtn.append(spinner);
+    } else {
+      aiBtn.textContent = 'AI';
+    }
+    li.append(aiBtn);
+  }
+
   const deleteBtn = document.createElement('button');
   deleteBtn.className = 'btn-delete';
   deleteBtn.title = 'Delete';
@@ -200,11 +228,24 @@ function renderStats() {
   if (countEl) countEl.textContent = total === 0 ? '' : `${done} / ${total} done`;
 }
 
+function renderAiError() {
+  const el = document.getElementById('ai-error');
+  if (!el) return;
+  if (state.aiError) {
+    el.textContent = state.aiError;
+    el.hidden = false;
+  } else {
+    el.textContent = '';
+    el.hidden = true;
+  }
+}
+
 function render() {
   renderList();
   renderEmptyState();
   renderFilterBar();
   renderStats();
+  renderAiError();
 }
 
 // ── Event wiring ───────────────────────────────────────────────
@@ -232,6 +273,8 @@ function initHandlers() {
       toggleTodo(id);
     } else if (e.target.closest('.btn-delete')) {
       deleteTodo(id);
+    } else if (e.target.closest('.btn-ai')) {
+      suggestPriority(id);
     }
   });
 
@@ -249,9 +292,65 @@ function initHandlers() {
   });
 }
 
-// ── AI Feature (Task 5) ────────────────────────────────────────
+// ── AI Feature (Task 5) ──────────────────────────────────
 
 async function suggestPriority(id) {
+  const todo = state.todos.find(t => t.id === id);
+  if (!todo || state.aiLoading.has(id)) return;
+
+  const apiKey = localStorage.getItem(API_KEY_STORAGE_KEY);
+  if (!apiKey) {
+    state.aiError = 'No API key saved. Open Settings to add one.';
+    render();
+    return;
+  }
+
+  state.aiLoading.add(id);
+  state.aiError = null;
+  render();
+
+  try {
+    const priority = await fetchPrioritySuggestion(todo.text, apiKey);
+    state.aiLoading.delete(id);
+    setPriority(id, priority);
+  } catch (err) {
+    state.aiLoading.delete(id);
+    state.aiError = err.message;
+    render();
+  }
+}
+
+async function fetchPrioritySuggestion(text, apiKey) {
+  const prompt =
+    'Rate this task as "high", "medium", or "low" priority. ' +
+    'Reply with exactly one word.\n\nTask: ' + text;
+
+  let response;
+  try {
+    response = await fetch(OPENROUTER_URL, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${apiKey}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        model: OPENROUTER_MODEL,
+        messages: [{ role: 'user', content: prompt }],
+      }),
+    });
+  } catch {
+    throw new Error('Network error. Check your connection.');
+  }
+
+  if (response.status === 401) throw new Error('Invalid API key. Check Settings.');
+  if (response.status === 429) throw new Error('Rate limited. Try again shortly.');
+  if (!response.ok)            throw new Error(`Request failed (${response.status}).`);
+
+  const data = await response.json();
+  const raw = data.choices?.[0]?.message?.content?.trim().toLowerCase() ?? '';
+  const priority = PRIORITIES.find(p => raw.includes(p));
+  if (!priority) throw new Error('Unexpected response from model.');
+  return priority;
 }
 
 // ── Boot ───────────────────────────────────────────────────────
