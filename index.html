@@ -35,6 +35,30 @@
       color: var(--text);
     }
 
+    /* Compact layout for the actual extension popup (Chrome sizes to content). */
+    body.in-extension {
+      min-width: 480px;
+      min-height: 0;
+      padding: 0;
+      background: var(--white);
+    }
+
+    body.in-extension .brand,
+    body.in-extension .caption { display: none; }
+
+    body.in-extension .card {
+      max-width: none;
+      width: 100%;
+      border-radius: 0;
+      box-shadow: none;
+    }
+
+    body.in-extension #add-form { padding: 12px 14px; gap: 8px; }
+    body.in-extension #filter-bar { padding: 8px 14px; }
+    body.in-extension #stats { padding: 6px 14px; }
+    body.in-extension .todo-item { padding: 11px 14px; }
+    body.in-extension footer { padding: 10px 14px; }
+
     /* ── Brand ───────────────────────────────────────────────── */
     .brand {
       display: flex;
@@ -405,7 +429,7 @@
       border-bottom: 1px solid #fecaca;
       font-weight: 500;
     }
-
+    #ai-error[hidden] { display: none; }
     .ai-error-msg { flex: 1; }
 
     .ai-error-close {
