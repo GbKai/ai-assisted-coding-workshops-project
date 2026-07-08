@@ -115,6 +115,18 @@ function clearDone() {
 | `options.js` | Settings page logic |
 | `icons/` | Extension icons (16, 48, 128 px) |
 | `index.html` | Preview version for browser (dev only) |
+| `skills/` | AI-assistant skill files (`SKILL.md` under each subfolder). See list below. |
+
+### Available skills
+
+Each skill is a `SKILL.md` under `skills/<name>/`. Use them when the trigger described in the skill's frontmatter matches.
+
+| Skill | When to use |
+|---|---|
+| [`grilling`](skills/grilling/SKILL.md) | Stress-test a plan or design with one-question-at-a-time interrogation before building. |
+| [`merge-pull-request`](skills/merge-pull-request/SKILL.md) | Merge a branch into `main` via a PR, resolve conflicts, or clean up after merging. |
+| [`openrouter-api-call`](skills/openrouter-api-call/SKILL.md) | Call the OpenRouter LLM API from the extension (Task 5, BYOK). |
+| [`work-github-issue`](skills/work-github-issue/SKILL.md) | Pick up and work through a GitHub issue end-to-end. |
 
 ---
 
