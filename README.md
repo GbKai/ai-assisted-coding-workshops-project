@@ -76,7 +76,7 @@ If any of this is unfamiliar, that's fine — you'll be introduced to it during 
 
 | Task | What you build |
 |---|---|
-| Task 1 | Add tasks & persist with `chrome.storage.local` |
+| Task 1 | Add tasks & persist with `localStorage` |
 | Task 2 | Mark done & delete with event delegation |
 | Task 3 | Filter bar (All / Active / Done) & task counter |
 | Task 4 | Due dates, urgency badges & sorting |
@@ -106,7 +106,7 @@ git checkout task-1        # start here
 
 git checkout -b my-task-1  # your working branch
 # … code with Copilot …
-git add . && git commit -m "feat: add and display todos with chrome.storage"
+git add . && git commit -m "feat: add and display todos with localStorage"
 
 # Stuck? Check the next branch for a working reference:
 git stash                  # save your work

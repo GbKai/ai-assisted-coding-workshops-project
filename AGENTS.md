@@ -12,7 +12,7 @@ This file tells any AI assistant (GitHub Copilot, Claude, Cursor, Codex, etc.) h
 
 - **What it is:** A Chrome Extension "Task List" app used as a training template for an AI-assisted coding workshop.
 - **Stack:** Plain HTML5, vanilla JavaScript (ES2020+), plain CSS. **No** bundler, npm, or frameworks.
-- **Persistence:** `chrome.storage.local` (never `localStorage`).
+- **Persistence:** `localStorage` (never `chrome.storage.local`).
 - **Manifest:** Chrome Extension Manifest V3.
 - **How it runs:** Loaded as an unpacked extension in Chrome (`chrome://extensions` → Load unpacked).
 
@@ -47,13 +47,13 @@ At the start of every session, the user should say **"I'm working on Task N"** (
 - `const` / `let`, arrow functions, template literals, destructuring.
 - Named constants — no magic strings.
 - Semantic HTML with accessibility attributes.
-- All `chrome.storage.local` keys go through a named constant with the prefix `"kainos-todo:"` (e.g. `"kainos-todo:todos"`).
+- All `localStorage` keys go through a named constant with the prefix `"kainos-todo:"` (e.g. `"kainos-todo:todos"`).
 - Comments only when the logic isn't self-explanatory. In English.
 
 ### Must NOT do
 - No libraries via npm or CDN (unless the user explicitly asks).
 - No TypeScript, React, Vue, or any framework.
-- No `localStorage` **in the Chrome-extension pages** (`popup.html`, `options.html`) — always `chrome.storage.local`. **Exception:** the browser preview (`index.html`) does not have access to `chrome.storage.local`, so `localStorage` is acceptable there during early workshop tasks. Keys still use the `"kainos-todo:"` prefix via a named constant.
+- No `chrome.storage.local` — use plain `localStorage` in every page (`popup.html`, `options.html`, `index.html`). Keys always go through the `"kainos-todo:"` named constant.
 - No backend, database, or proxy server. (Task 5 is the only exception: a direct browser-to-API call with the user's own key — "BYOK".)
 - No over-engineering. Simplicity beats flexibility.
 
@@ -63,11 +63,11 @@ At the start of every session, the user should say **"I'm working on Task N"** (
 
 ```js
 // ❌ Bad — magic string, easy to typo
-chrome.storage.local.set({ "kainos-todo:todos": todos });
+localStorage.setItem("kainos-todo:todos", JSON.stringify(todos));
 
 // ✅ Good — one source of truth
 const STORAGE_KEYS = { TODOS: "kainos-todo:todos" };
-chrome.storage.local.set({ [STORAGE_KEYS.TODOS]: todos });
+localStorage.setItem(STORAGE_KEYS.TODOS, JSON.stringify(todos));
 ```
 
 **Event handling — delegate, don't attach inside render:**
@@ -132,37 +132,36 @@ function clearDone() {
 
 The project grows across **5 tasks**. Only work on the task the user names. Do **not** implement features from a later task, even if you "notice" they're missing.
 
-> **Placeholders — fill in when ready.**
-
-- **Task 1 — Add tasks & persistence**
+- **Task 1 — Add Tasks & Save** *(skill: prompt precision)*
   - Goal: Users can type a task name, add it to the list, and the list survives a page refresh.
   - Files touched: `popup.js` (state, `loadState`, `saveState`, `addTodo`, form handler). `index.html` markup is already wired.
-  - Out of scope: Marking tasks done (Task 2), filters/counts (Task 3).
+  - Persistence: `localStorage` in every page, always via the `"kainos-todo:"` named constant.
+  - Out of scope: Marking tasks done (Task 2), filters/counts (Task 3), due dates (Task 4), AI (Task 5).
   - Done when: Typing text + pressing Enter or clicking **Add** appends a task; empty input adds nothing; refreshing the page keeps the tasks; when the list is empty the empty-state message is shown.
 
-- **Task 2 — _[title]_**
-  - Goal: _[…]_
-  - Files touched: _[…]_
-  - Out of scope: _[…]_
-  - Done when: _[…]_
+- **Task 2 — Mark Done & Delete** *(skill: critical review)*
+  - Goal: Users can complete a task, un-complete it, and remove it from the list.
+  - Files touched: `popup.js` (state updates, render, delegated event handler on `#todo-list`), `popup.html` (checkbox + delete button markup inside each `<li>`, minimal CSS for the "done" state).
+  - Out of scope: Filters and counters (Task 3), due dates (Task 4), AI (Task 5).
+  - Done when: Clicking the checkbox toggles the task's `done` state and visually marks it (e.g. strikethrough); clicking again un-completes it; clicking delete removes the task; all changes persist across refresh; interactions use delegated events, not per-item listeners.
 
-- **Task 3 — _[title]_**
-  - Goal: _[…]_
-  - Files touched: _[…]_
-  - Out of scope: _[…]_
-  - Done when: _[…]_
+- **Task 3 — Filter & Count** *(skill: targeted refactoring)*
+  - Goal: A filter bar (All / Active / Done) shows the matching tasks and a counter shows how many are left.
+  - Files touched: `popup.js` (add `filter` to state, derive visible list in render, handle filter clicks), `popup.html` (filter bar markup + counter element, minimal CSS for the active filter).
+  - Out of scope: Due dates and sorting (Task 4), AI (Task 5). Do not persist the filter choice unless the user asks.
+  - Done when: The three filters correctly show all / only active / only done tasks; the counter reflects the number of active (not-done) tasks; the currently selected filter is visually indicated; render remains a pure read of state.
 
-- **Task 4 — _[title]_**
-  - Goal: _[…]_
-  - Files touched: _[…]_
-  - Out of scope: _[…]_
-  - Done when: _[…]_
+- **Task 4 — Due Dates & Urgency** *(skill: writing sort prompts)*
+  - Goal: Each task can have a due date; tasks show badges for "overdue" and "today"; the list is auto-sorted by urgency.
+  - Files touched: `popup.js` (add `dueDate` to each todo, sort helper, badge logic in render), `popup.html` (date picker in the add-task form, badge markup + CSS).
+  - Out of scope: AI features (Task 5). Do not add time-of-day, recurring tasks, or reminders unless the user asks.
+  - Done when: A user can pick a due date when adding a task; overdue tasks show an "Overdue" badge, tasks due today show a "Today" badge; the visible list is sorted by urgency (overdue → today → upcoming → no date); dates persist across refresh.
 
-- **Task 5 — AI integration (BYOK)**
-  - Goal: Call an LLM API directly from the extension using the user's own OpenRouter key.
-  - Files touched: `options.html`, `options.js`, `popup.js`.
-  - Out of scope: Backends, proxies, storing keys anywhere other than `chrome.storage.local`.
-  - Done when: The user can save their OpenRouter key on the options page, and clicking the AI action in the popup returns a response from the LLM without any server in between.
+- **Task 5 — AI Priority Suggestions (BYOK)** *(skill: async & error handling)*
+  - Goal: Call an LLM API directly from the extension using the user's own key to suggest task priorities. Follow [`skills/openrouter-api-call/SKILL.md`](skills/openrouter-api-call/SKILL.md).
+  - Files touched: `options.html`, `options.js` (save/load the API key in `localStorage`), `popup.js` (AI action button, `fetch` to the LLM, loading + error states).
+  - Out of scope: Backends, proxies, storing keys anywhere other than `localStorage`. Do not hard-code any key.
+  - Done when: The user can save their API key on the options page; clicking the AI action in the popup calls the LLM directly from the browser and shows a suggested priority ordering; loading and error states are handled visibly; no server sits between the extension and the API.
 
 If the user hasn't said which task they're on, **ask**.
 
@@ -186,6 +185,6 @@ Ask yourself:
 
 1. Do I know **which task** the user is on?
 2. Is my change inside the **allowed files** for that task?
-3. Am I about to use `localStorage`, a framework, or npm? → **Stop.**
+3. Am I about to use `chrome.storage.local`, a framework, or npm? → **Stop.**
 4. Am I making an assumption? → **Ask instead.**
 5. Will this change need an update to `AGENTS.md`? → **Flag it.**

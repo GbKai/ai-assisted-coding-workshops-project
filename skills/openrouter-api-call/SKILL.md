@@ -12,14 +12,14 @@ Use this skill when:
 - The user asks how to call an LLM, wire up the AI button, or send a request to OpenRouter.
 - The user asks about handling the API key in the extension.
 
-Do **not** use this skill for anything else. Storing the key on the options page is normal `chrome.storage.local` work — no skill needed.
+Do **not** use this skill for anything else. Storing the key on the options page is normal `localStorage` work — no skill needed.
 
 ---
 
 ## Prerequisites — check before writing code
 
 1. The user has already saved their OpenRouter API key on the options page.
-2. The key is stored in `chrome.storage.local` under a named constant (e.g. `STORAGE_KEYS.API_KEY = "kainos-todo:api-key"`).
+2. The key is stored in `localStorage` under a named constant (e.g. `STORAGE_KEYS.API_KEY = "kainos-todo:api-key"`).
 3. `manifest.json` has `"host_permissions": ["https://openrouter.ai/*"]`.
 
 If any of these are missing, **stop and tell the user** — do not silently add them.
@@ -31,7 +31,7 @@ If any of these are missing, **stop and tell the user** — do not silently add 
 ### 1. Read the key from storage
 
 ```js
-const { [STORAGE_KEYS.API_KEY]: apiKey } = await chrome.storage.local.get(STORAGE_KEYS.API_KEY);
+const apiKey = localStorage.getItem(STORAGE_KEYS.API_KEY);
 if (!apiKey) {
   // Show the user a friendly message pointing them to the options page.
   return;
@@ -76,7 +76,7 @@ Render the reply in the popup — do not `alert()`, do not `console.log()` in pr
 - **Never log the API key.** Not in `console.log`, not in error messages, not in analytics.
 - **Never send the key to any other server.** BYOK means browser → OpenRouter, nothing in between.
 - **Never hardcode a key** in the source, even a test one.
-- **Never use `localStorage`** — always `chrome.storage.local`.
+- **Never use `chrome.storage.local`** — always plain `localStorage`.
 - **Never add a proxy or backend** to hide the key. The whole point of Task 5 is direct BYOK.
 - Keep the model name in a named constant so it can be swapped without hunting through the code.
 
