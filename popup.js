@@ -220,7 +220,21 @@ function createTodoItem(todo) {
 
 function renderEmptyState() {
   const empty = document.getElementById('empty-state');
-  empty.style.display = getVisibleTodos().length === 0 ? 'block' : 'none';
+  const heading = document.getElementById('empty-state-heading');
+  const message = document.getElementById('empty-state-message');
+  const visible = getVisibleTodos().length;
+  const total   = state.todos.length;
+
+  empty.style.display = visible === 0 ? 'block' : 'none';
+  if (visible !== 0) return;
+
+  if (total === 0) {
+    heading.textContent = 'All clear!';
+    message.textContent = 'Add a task above to get started.';
+  } else {
+    heading.textContent = 'No matching tasks';
+    message.textContent = 'Try a different filter.';
+  }
 }
 
 function renderFilterBar() {
@@ -247,13 +261,24 @@ function renderStats() {
 function renderAiError() {
   const el = document.getElementById('ai-error');
   if (!el) return;
-  if (state.aiError) {
-    el.textContent = state.aiError;
-    el.hidden = false;
-  } else {
-    el.textContent = '';
+  el.replaceChildren();
+  if (!state.aiError) {
     el.hidden = true;
+    return;
   }
+  el.hidden = false;
+
+  const msg = document.createElement('span');
+  msg.className = 'ai-error-msg';
+  msg.textContent = state.aiError;
+  el.append(msg);
+
+  const close = document.createElement('button');
+  close.type = 'button';
+  close.className = 'ai-error-close';
+  close.setAttribute('aria-label', 'Dismiss error');
+  close.textContent = '✕';
+  el.append(close);
 }
 
 function render() {
@@ -299,6 +324,13 @@ function initHandlers() {
     const btn = e.target.closest('.filter-btn');
     if (!btn) return;
     setFilter(btn.dataset.filter);
+  });
+
+  // Dismiss the AI-error banner
+  document.getElementById('ai-error').addEventListener('click', (e) => {
+    if (!e.target.closest('.ai-error-close')) return;
+    state.aiError = null;
+    render();
   });
 
   // Options link
