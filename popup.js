@@ -44,9 +44,19 @@ function addTodo(text) {
 }
 
 function toggleTodo(id) {
+  const todo = state.todos.find(t => t.id === id);
+  if (!todo) return;
+  todo.done = !todo.done;
+  saveState();
+  render();
 }
 
 function deleteTodo(id) {
+  const before = state.todos.length;
+  state.todos = state.todos.filter(t => t.id !== id);
+  if (state.todos.length === before) return;
+  saveState();
+  render();
 }
 
 function setFilter(filter) {
@@ -69,7 +79,6 @@ function renderList() {
   for (const todo of visible) {
     list.append(createTodoItem(todo));
   }
-  // TODO Task 2: wire checkbox and delete button via event delegation in initHandlers()
 }
 
 function createTodoItem(todo) {
@@ -144,6 +153,19 @@ function initHandlers() {
     addTodo(input.value);
     input.value = '';
     input.focus();
+  });
+
+  // Delegated handler for checkbox toggles and delete-button clicks
+  document.getElementById('todo-list').addEventListener('click', (e) => {
+    const li = e.target.closest('.todo-item');
+    if (!li) return;
+    const { id } = li.dataset;
+
+    if (e.target.matches('.todo-checkbox')) {
+      toggleTodo(id);
+    } else if (e.target.closest('.btn-delete')) {
+      deleteTodo(id);
+    }
   });
 
   // Options link
