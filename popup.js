@@ -1,8 +1,14 @@
 const STORAGE_KEY = 'kainos-todo:todos';
 
+const FILTERS = {
+  ALL: 'all',
+  ACTIVE: 'active',
+  DONE: 'done',
+};
+
 const state = {
   todos: [],
-  filter: 'all',
+  filter: FILTERS.ALL,
   aiLoading: false,
 };
 
@@ -60,10 +66,18 @@ function deleteTodo(id) {
 }
 
 function setFilter(filter) {
+  if (!Object.values(FILTERS).includes(filter)) return;
+  if (state.filter === filter) return;
+  state.filter = filter;
+  render();
 }
 
 function getVisibleTodos() {
-  return state.todos;
+  switch (state.filter) {
+    case FILTERS.ACTIVE: return state.todos.filter(t => !t.done);
+    case FILTERS.DONE:   return state.todos.filter(t =>  t.done);
+    default:             return state.todos;
+  }
 }
 
 function setPriority(id, priority) {
@@ -119,6 +133,10 @@ function renderEmptyState() {
 }
 
 function renderFilterBar() {
+  const buttons = document.querySelectorAll('#filter-bar .filter-btn');
+  for (const btn of buttons) {
+    btn.classList.toggle('active', btn.dataset.filter === state.filter);
+  }
 }
 
 function renderStats() {
@@ -166,6 +184,13 @@ function initHandlers() {
     } else if (e.target.closest('.btn-delete')) {
       deleteTodo(id);
     }
+  });
+
+  // Delegated handler for filter-bar clicks
+  document.getElementById('filter-bar').addEventListener('click', (e) => {
+    const btn = e.target.closest('.filter-btn');
+    if (!btn) return;
+    setFilter(btn.dataset.filter);
   });
 
   // Options link
