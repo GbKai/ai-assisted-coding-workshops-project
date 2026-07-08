@@ -3,7 +3,7 @@
 ## Stack
 - Plain HTML5, vanilla JavaScript (ES2020+), plain CSS (no framework)
 - No bundler, no npm, no frameworks
-- Persistence: `chrome.storage.local` (NOT localStorage)
+- Persistence: `localStorage` (NOT `chrome.storage.local`)
 - Runs as a Chrome Extension (Manifest V3)
 
 ## Code Standards
@@ -17,7 +17,7 @@
 ## What NOT to Do
 - Don't add libraries via npm or CDN without explicit request
 - Don't introduce TypeScript, React, or other frameworks
-- Don't use `localStorage` in the Chrome-extension pages (`popup.html`, `options.html`) — use `chrome.storage.local` there. **Exception:** the browser preview (`index.html`) has no `chrome.storage.local`, so `localStorage` is acceptable there during early workshop tasks. Keys still use the `"kainos-todo:"` prefix via a named constant.
+- Don't use `chrome.storage.local` — use plain `localStorage` in every page (`popup.html`, `options.html`, `index.html`). Keys always use the `"kainos-todo:"` prefix via a named constant.
 - Don't add a backend, database, or proxy (Task 5 is an exception — BYOK direct API call)
 - Don't over-engineer — simplicity wins over flexibility
 
@@ -27,7 +27,7 @@
 - `options.html` — settings page for API key
 - `options.js` — settings page logic
 - `manifest.json` — Chrome Extension manifest (Manifest V3)
-- `chrome.storage.local` keys: always via a named constant, prefix `"kainos-todo:"` (e.g. `"kainos-todo:todos"`)
+- `localStorage` keys: always via a named constant, prefix `"kainos-todo:"` (e.g. `"kainos-todo:todos"`)
 
 ## Working Pattern
 - Keep state in a single `state` object
