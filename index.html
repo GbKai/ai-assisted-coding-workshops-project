@@ -381,7 +381,15 @@
     }
 
     @keyframes spin { to { transform: rotate(360deg); } }
-
+    /* ── AI Error Banner ─────────────────────────────── */
+    #ai-error {
+      padding: 10px 20px;
+      font-size: 12px;
+      color: var(--high);
+      background: #fef2f2;
+      border-bottom: 1px solid #fecaca;
+      font-weight: 500;
+    }
     /* ── Footer ──────────────────────────────────────────────── */
     footer {
       padding: 14px 20px;
@@ -452,6 +460,8 @@
     </div>
 
     <div id="stats">0 tasks left</div>
+
+    <div id="ai-error" role="alert" hidden></div>
 
     <ul id="todo-list"></ul>
 
