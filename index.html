@@ -140,6 +140,24 @@
       box-shadow: 0 0 0 3px rgba(0, 177, 64, 0.12);
     }
 
+    #todo-due {
+      padding: 10px 12px;
+      border: 1.5px solid #e5e7eb;
+      border-radius: 10px;
+      font-size: 13px;
+      font-family: inherit;
+      color: var(--text);
+      background: #f9fafb;
+      outline: none;
+      transition: border-color 0.15s, box-shadow 0.15s, background 0.15s;
+    }
+
+    #todo-due:focus {
+      border-color: var(--green);
+      background: white;
+      box-shadow: 0 0 0 3px rgba(0, 177, 64, 0.12);
+    }
+
     #btn-add {
       background: var(--green);
       color: white;
@@ -265,6 +283,21 @@
     .priority-high   { background: #fee2e2; color: var(--high); }
     .priority-medium { background: #fef3c7; color: var(--medium); }
     .priority-low    { background: #d1fae5; color: var(--low); }
+
+    /* ── Due-date Badges ─────────────────────────────────────── */
+    .due-badge {
+      font-size: 10px;
+      font-weight: 700;
+      padding: 3px 9px;
+      border-radius: 20px;
+      text-transform: uppercase;
+      letter-spacing: 0.7px;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .due-badge.overdue { background: #fee2e2; color: var(--high); }
+    .due-badge.today   { background: #fef3c7; color: var(--medium); }
 
     /* ── Delete Button ───────────────────────────────────────── */
     .btn-delete {
@@ -408,6 +441,7 @@
         maxlength="200"
         autocomplete="off"
       />
+      <input id="todo-due" type="date" aria-label="Due date" />
       <button type="submit" id="btn-add">Add</button>
     </form>
 

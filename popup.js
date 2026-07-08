@@ -6,6 +6,14 @@ const FILTERS = {
   DONE: 'done',
 };
 
+const URGENCY = {
+  OVERDUE: 0,
+  TODAY: 1,
+  UPCOMING: 2,
+  NO_DATE: 3,
+  DONE: 4,
+};
+
 const state = {
   todos: [],
   filter: FILTERS.ALL,
@@ -33,7 +41,7 @@ function saveState() {
 
 // ── Business logic ────────────────────────────────
 
-function addTodo(text) {
+function addTodo(text, dueDate = null) {
   const trimmed = text.trim();
   if (!trimmed) return;
 
@@ -42,6 +50,7 @@ function addTodo(text) {
     text: trimmed,
     done: false,
     createdAt: new Date().toISOString(),
+    dueDate: dueDate || null,
     priority: null,
   });
 
@@ -73,11 +82,40 @@ function setFilter(filter) {
 }
 
 function getVisibleTodos() {
-  switch (state.filter) {
-    case FILTERS.ACTIVE: return state.todos.filter(t => !t.done);
-    case FILTERS.DONE:   return state.todos.filter(t =>  t.done);
-    default:             return state.todos;
+  const filtered = filterTodos(state.todos, state.filter);
+  return sortByUrgency(filtered);
+}
+
+function filterTodos(todos, filter) {
+  switch (filter) {
+    case FILTERS.ACTIVE: return todos.filter(t => !t.done);
+    case FILTERS.DONE:   return todos.filter(t =>  t.done);
+    default:             return todos;
   }
+}
+
+// Local YYYY-MM-DD (matches the value produced by <input type="date">).
+function todayIso() {
+  return new Date().toLocaleDateString('en-CA');
+}
+
+function getUrgency(todo) {
+  if (todo.done)      return URGENCY.DONE;
+  if (!todo.dueDate)  return URGENCY.NO_DATE;
+  const today = todayIso();
+  if (todo.dueDate < today)  return URGENCY.OVERDUE;
+  if (todo.dueDate === today) return URGENCY.TODAY;
+  return URGENCY.UPCOMING;
+}
+
+function sortByUrgency(todos) {
+  return [...todos].sort((a, b) => {
+    const ua = getUrgency(a);
+    const ub = getUrgency(b);
+    if (ua !== ub) return ua - ub;
+    if (a.dueDate && b.dueDate) return a.dueDate.localeCompare(b.dueDate);
+    return 0;
+  });
 }
 
 function setPriority(id, priority) {
@@ -110,6 +148,15 @@ function createTodoItem(todo) {
   text.className = 'todo-text';
   text.textContent = todo.text;
   li.append(text);
+
+  const urgency = getUrgency(todo);
+  if (urgency === URGENCY.OVERDUE || urgency === URGENCY.TODAY) {
+    const badge = document.createElement('span');
+    const isOverdue = urgency === URGENCY.OVERDUE;
+    badge.className = isOverdue ? 'due-badge overdue' : 'due-badge today';
+    badge.textContent = isOverdue ? 'Overdue' : 'Today';
+    li.append(badge);
+  }
 
   if (todo.priority) {
     const badge = document.createElement('span');
@@ -168,8 +215,10 @@ function initHandlers() {
   document.getElementById('add-form').addEventListener('submit', (e) => {
     e.preventDefault();
     const input = document.getElementById('todo-input');
-    addTodo(input.value);
+    const due   = document.getElementById('todo-due');
+    addTodo(input.value, due.value || null);
     input.value = '';
+    due.value = '';
     input.focus();
   });
 
