@@ -403,5 +403,9 @@ async function fetchPrioritySuggestion(text, apiKey) {
 
 // ── Boot ───────────────────────────────────────────────────────
 
+if (location.protocol === 'chrome-extension:') {
+  document.body.classList.add('in-extension');
+}
+
 loadState();
 initHandlers();
