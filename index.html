@@ -395,6 +395,9 @@
     @keyframes spin { to { transform: rotate(360deg); } }
     /* ── AI Error Banner ─────────────────────────────── */
     #ai-error {
+      display: flex;
+      align-items: center;
+      gap: 8px;
       padding: 10px 20px;
       font-size: 12px;
       color: var(--high);
@@ -402,6 +405,24 @@
       border-bottom: 1px solid #fecaca;
       font-weight: 500;
     }
+
+    .ai-error-msg { flex: 1; }
+
+    .ai-error-close {
+      background: none;
+      border: none;
+      color: var(--high);
+      cursor: pointer;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 13px;
+      line-height: 1;
+      opacity: 0.7;
+      transition: opacity 0.15s, background 0.15s;
+      font-family: inherit;
+    }
+
+    .ai-error-close:hover { opacity: 1; background: #fee2e2; }
     /* ── Footer ──────────────────────────────────────────────── */
     footer {
       padding: 14px 20px;
@@ -479,8 +500,8 @@
 
     <div id="empty-state">
       <div class="empty-icon">✓</div>
-      <h3>All clear!</h3>
-      <p>Add a task above to get started.</p>
+      <h3 id="empty-state-heading">All clear!</h3>
+      <p id="empty-state-message">Add a task above to get started.</p>
     </div>
 
     <footer>
