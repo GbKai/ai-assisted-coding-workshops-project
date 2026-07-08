@@ -108,13 +108,12 @@ function clearDone() {
 
 | File | Purpose |
 |---|---|
-| `manifest.json` | Chrome Extension config (Manifest V3) |
-| `popup.html` | Popup UI. All CSS lives inline in `<style>`. |
+| `manifest.json` | Chrome Extension config (Manifest V3). Declares the popup, options page and OpenRouter host permission. |
+| `index.html` | Popup UI (referenced by `manifest.json` as `default_popup`). All CSS lives inline in `<style>`. Also opens directly as a browser preview. |
 | `popup.js` | All popup logic: state, render, event handlers |
 | `options.html` | Settings page (API key input) |
 | `options.js` | Settings page logic |
-| `icons/` | Extension icons (16, 48, 128 px) |
-| `index.html` | Preview version for browser (dev only) |
+| `icons/` | Extension icons (`icon.svg` only; PNGs optional) |
 | `skills/` | AI-assistant skill files (`SKILL.md` under each subfolder). See list below. |
 
 ### Available skills
@@ -153,19 +152,19 @@ The project grows across **5 tasks**. Only work on the task the user names. Do *
 
 - **Task 2 — Mark Done & Delete** *(skill: critical review)*
   - Goal: Users can complete a task, un-complete it, and remove it from the list.
-  - Files touched: `popup.js` (state updates, render, delegated event handler on `#todo-list`), `popup.html` (checkbox + delete button markup inside each `<li>`, minimal CSS for the "done" state).
+  - Files touched: `popup.js` (state updates, render, delegated event handler on `#todo-list`), `index.html` (checkbox + delete button markup are already built in JS by `createTodoItem`, plus the `.todo-item.done` CSS in `<style>`).
   - Out of scope: Filters and counters (Task 3), due dates (Task 4), AI (Task 5).
   - Done when: Clicking the checkbox toggles the task's `done` state and visually marks it (e.g. strikethrough); clicking again un-completes it; clicking delete removes the task; all changes persist across refresh; interactions use delegated events, not per-item listeners.
 
 - **Task 3 — Filter & Count** *(skill: targeted refactoring)*
   - Goal: A filter bar (All / Active / Done) shows the matching tasks and a counter shows how many are left.
-  - Files touched: `popup.js` (add `filter` to state, derive visible list in render, handle filter clicks), `popup.html` (filter bar markup + counter element, minimal CSS for the active filter).
+  - Files touched: `popup.js` (add `filter` to state, derive visible list in render, handle filter clicks), `index.html` (filter bar markup + counter element, minimal CSS for the active filter).
   - Out of scope: Due dates and sorting (Task 4), AI (Task 5). Do not persist the filter choice unless the user asks.
   - Done when: The three filters correctly show all / only active / only done tasks; the counter reflects the number of active (not-done) tasks; the currently selected filter is visually indicated; render remains a pure read of state.
 
 - **Task 4 — Due Dates & Urgency** *(skill: writing sort prompts)*
   - Goal: Each task can have a due date; tasks show badges for "overdue" and "today"; the list is auto-sorted by urgency.
-  - Files touched: `popup.js` (add `dueDate` to each todo, sort helper, badge logic in render), `popup.html` (date picker in the add-task form, badge markup + CSS).
+  - Files touched: `popup.js` (add `dueDate` to each todo, sort helper, badge logic in render), `index.html` (date picker in the add-task form, badge markup + CSS).
   - Out of scope: AI features (Task 5). Do not add time-of-day, recurring tasks, or reminders unless the user asks.
   - Done when: A user can pick a due date when adding a task; overdue tasks show an "Overdue" badge, tasks due today show a "Today" badge; the visible list is sorted by urgency (overdue → today → upcoming → no date); dates persist across refresh.
 

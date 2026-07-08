@@ -41,18 +41,18 @@ No `npm install`, no bundler, no Live Server needed. The app runs as a Chrome Ex
 
 | File / Folder | Purpose |
 |---|---|
-| `index.html` | Standalone browser preview of the app (works without loading the extension) |
-| `popup.js` | Application logic — state, render, event handlers (stubs remain for Tasks 2–5) |
-| `options.html` | Settings page — OpenRouter API key input |
-| `options.js` | Settings logic — stubs for Task 5 |
-| `icons/` | Extension icons (SVG source + generated PNGs) |
+| `manifest.json` | Chrome Extension manifest (Manifest V3). Declares the popup, options page and OpenRouter host permission. |
+| `index.html` | Popup UI (referenced by `manifest.json`). Also opens directly in a browser as a standalone preview. |
+| `popup.js` | Application logic — state, render, event handlers. |
+| `options.html` | Settings page — OpenRouter API key input. |
+| `options.js` | Settings logic — loads and saves the API key in `localStorage`. |
+| `icons/` | Extension icons. Only `icon.svg` is checked in; generate PNGs (see note below) if you want a custom toolbar icon. |
 | [`AGENTS.md`](AGENTS.md) | Rules that apply to any AI assistant working on this project |
 | `.github/copilot-instructions.md` | Copilot-specific rules (auto-loaded in VS Code) |
 | [`.github/agents/`](.github/agents) | Custom agents you can pick from the VS Code agent selector |
 | [`skills/`](skills) | Reusable procedures the AI pulls in only when relevant |
-| `manifest.json`, `popup.html` | Chrome Extension shell — added later in the workshop (tracked in issue #4) |
 
-> **Icons note:** Generate `icons/icon16.png`, `icons/icon48.png`, and `icons/icon128.png` before loading the extension. Use [favicon.io](https://favicon.io/favicon-generator/) or any icon tool. A reference SVG is provided in `icons/icon.svg`.
+> **Icons note (optional):** The extension loads fine without PNG icons — Chrome will show a default puzzle piece in the toolbar. To add a real icon, generate `icons/icon16.png`, `icons/icon48.png`, and `icons/icon128.png` (e.g. via [favicon.io](https://favicon.io/favicon-generator/)) and add an `icons` field to `manifest.json` referencing them. A reference SVG is provided in `icons/icon.svg`.
 
 ---
 
@@ -62,6 +62,7 @@ This template ships with three layers of AI customisation. They're what makes an
 
 - **Always-on rules** — [`AGENTS.md`](AGENTS.md) and [`.github/copilot-instructions.md`](.github/copilot-instructions.md). Loaded automatically on every prompt; define what the AI must/must-not do (no npm, no frameworks, storage-key conventions, etc.).
 - **Skills** — [`skills/`](skills). Reusable procedures the AI pulls in only when the task matches. Currently:
+  - `grilling` — stress-test a plan with one-question-at-a-time interrogation
   - `merge-pull-request` — safe PR merge lifecycle
   - `work-github-issue` — pick up an issue, branch, PR, close
   - `openrouter-api-call` — how to call OpenRouter for Task 5
